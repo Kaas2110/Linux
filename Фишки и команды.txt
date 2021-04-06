@@ -1,0 +1,1319 @@
+# Урок 2. Настройка и знакомство с интерфейсом командной строки
+
+# Команда pwd покажет текущий каталог как абсолютный путь.
+pwd
+
+# Команда cd
+# Используем абсолютный путь
+cd /usr/local/bin
+
+# Вернуться в домашний каталог 
+cd ~
+
+# Используем относительный путь
+cd Downloads
+
+# Команда ls
+
+# Покажет подробный список содержимого
+ls -l
+
+# Покажет скрытые файлы и каталоги
+ls -a
+
+# Параметры можно использовать совместно
+ls -la
+
+# Команда touch
+touch file1.txt
+touch file2.txt
+
+# Команда mkdir
+mkdir lesson2
+
+# Команда cat
+cat /etc/passwd
+
+# Команда cp
+cp file1.txt file3.txt
+cp file2.txt lesson2/
+
+# Проверим
+ls lesson2/
+
+# Копирование директорий
+# Так получим ошибку
+cp lesson2 lesson2_copy
+
+# Применим ключ рекурсивного копирования
+cp -r lesson2 lesson2_copy
+
+# Команда mv
+# Перемещение
+mv file3.txt lesson2/
+
+# Переименование 
+mv file2.txt file4.txt
+
+# Команда rm
+rm file4.txt
+
+# Программы постраничного просмотра текста: less и more
+more /etc/passwd
+less /etc/passwd
+
+# Команда tail
+tail /etc/passwd
+
+# Применим эту команду для просмотров логов
+cd /var/log
+sudo tail -f syslog 
+
+# Текстовые редакторы vi/Vim
+vim file1.txt
+
+# Текстовый редактор nano
+nano file1.txt
+
+ssh user@192.115.0.115 - подключение через пароль к виртуальной машине
+
+ssh-keygen # создание файла с секретным паролем при необходимости вводим название файла
+
+
+
+ssh -i id_rsa mikhail@192.168.0.115  - подключение по секретному паролю
+
+sudo adduser user1 - доабвить нового пользователя
+
+sudo cat /etc/(passwd/shadow/group)  - посмотреть системные файлы данные о пользователи/ пароли пользователей / группы пользователей
+
+sudo cat /etc/sudoers - открыть системный файл с правами пользователей
+
+sudo chown user1:team1 lesson_3 - команда изменения владельца директории (можно написать только владельца sudo chown user1 lesson_3 )
+
+sudo chgrp team2 lesson_3 - изменение владельца -группы
+
+sudo usermod -aG team3 user3 - добавить пользователя в другую группу
+
+sudo visudo - внести изменения через редактор с проверкой синтаксиса системного 				  файла прав доступа групп к командам
+
+
+sudo deluser user1 team1 - удалить пользователя из группы
+
+sudo userdel -r user1 -  удалить пользователя с домашней директорией и почтой
+
+sudo usermod -aG sudo user1 -  добавить юзера в группу судо
+
+
+user1 ALL=/usr/sbin/adduser - при помощи команды sudo visudo  заходим в файл
+								 судоерс и добавляем пользователю привелегию добавления других пользователей, можно задать другие привелегии (см инет)
+
+
+whereis useradd -  определяет где расположен исполняемый файл добавления 											пользователя
+
+
+sudo systemctl status sshd   -   проверка состояния процесса (sshd указан для 										примера)
+
+
+sudo systemctl start/stop/restart/reload/enable/disable sshd -  основные методы 																	остановку запуска 																или выключения 																какой-либо программы-файла
+
+
+
+kill -15 20976З - сигнал корректного завершения программы
+kill -9 20976З  - принудительный сигнал закрытия процесса
+
+
+ps -ef   - открывает все текущие процессы
+
+
+
+ps -ef | grep sshd    -  поиск конкретного процесса  в списки процессов
+
+killall sshd   -  принудительное закрытие всех процессов 
+
+
+cat /etc/* 1> full.log 2>&1  - перенаправление стандартного потока ошибок в 									стандартный поток вывода, а стандартный поток 									вывода перенаправляем в файл лог
+
+
+
+
+
+
+
+
+# 1. Генерируем пару ключей на основной машине
+ssh-keygen
+
+# 2. Копируем публичный ключ на удалённую систему
+scp id_rsa.pub victor@192.168.1.119:
+
+# На удалённой машине добавляем публичный ключ в файл known_hosts
+cat id_rsa.pub >> .ssh/authorized_keys
+
+# Отключим аутентификацию ssh по паролю
+# Выставляем PasswordAuthentication no
+sudo nano  /etc/ssh/sshd_config
+
+# Перезапускаем демон sshd
+sudo systemctl restart sshd
+
+# Подключаемся с удалённой машины с помощью секретного ключа
+ssh -i id_rsa ubuntu@192.168.1.119
+
+
+
+# Управление пользователями
+# Посмотрим UID и GID активного пользователя командой id
+id
+
+# Посмотрим UID и GID пользователя root
+sudo id
+
+# Файл пользователей системы
+cat /etc/passwd
+
+# Файл групп
+cat /etv/group
+
+# Файл паролей
+cat /etc/shadow
+
+# Создание пользователя с помощью команды useradd
+sudo useradd -m -s /bin/bash user1
+sudo useradd -s /bin/bash -d /home/user1 -m user1
+
+# Создание пользователя с помощью скрипта adduser
+sudo adduser user2
+
+# Создание группы командой groupadd
+sudo groupadd team1
+
+# Создание группы с помощью скрипта addgroup
+sudo addgroup team2
+
+# Удаление пользователя
+sudo userdel -r user2
+
+# Изменение параметров пользователя
+# Изменение пароля активного пользователя
+passwd
+
+# Изменение пароля другого пользователя
+sudo passwd user1
+
+# Меняем аттрибуты пользователя, добавим пользователя user1 в группу sudo
+sudo usermod -aG sudo user1
+
+# Изменение владельца и группы владельца файлов и каталогов
+# Просмотр информации о владельце файла и группе-владельце
+touch test.txt
+ls -l
+
+sudo chown user1:team1 test.txt
+
+# Изменим группу для каталога
+mkdir lesson3
+ls -l
+sudo chgrp -R team1 lesson3
+
+# Команда переключения пользователя
+su user2
+
+# Работа с sudo
+# Редактирование файла /etc/sudoers
+sudo sudoedit
+
+# sudo - англ. substitute user and do
+
+
+
+# Загрузка ОС и процессы
+# Просмотр процессов
+ps -ef
+
+# Управление процессами
+# состояние системы
+systemctl status
+
+# Проверим статус демона sshd
+sudo systemctl status sshd
+
+# Остановим демон
+sudo systemctl stop sshd
+
+# Снова запустим
+sudo systemctl start sshd
+
+# Уберём из автозапуска
+sudo systemctl disable sshd
+
+# Вернём в автозапуск
+sudo systemctl enable sshd
+
+
+# Работа с процессами
+# Запустим mc
+mc
+
+# ПОсмотрим процессы
+ps -ef
+
+# Отправим дефолтный сигнал процессу
+kill 3452
+
+# Отправим сигнал KILL процессу
+kill -9 3452
+
+
+# Стандартные потоки. Конвейер (pipeline)
+# Создадим тестовый файл
+nano testfile.txt
+
+# Перенаправим содержимое файла на ввод cat
+cat < testfile.txt
+
+# Вывод строки на экран
+echo 'Hello, team!'
+
+# Перенаправление строки в файл
+echo 'Hello, team!' > testfile.txt
+
+# Добавление строки в файл
+echo 'Hello again, team!' >> testfile.txt
+
+# Попробуем вывести содержимое /etc/*
+cat /etc/*
+
+# Перенаправим поток вывода в файл
+cat /etc/* > cat.log
+
+# Перенаправим поток ошибок в файл
+cat /etc/* 2>> errors.log
+
+# Перенаправим поток вывода вместе с потоком ошибок в файл
+cat /etc/* > full.log 2>&1
+
+# Уберём поток ошибок 
+cat /etc/* 2> /dev/null
+
+# Передадим по конвееру вывод содержимого директории в команду wc
+ls | wc -l
+
+# Пример поиска с конвеером
+cat /etc/passwd | grep root
+
+
+# Просмотр процессов
+ps -ef | less
+
+
+# Использование оперативной памяти и процессорного времени
+# Программа top
+top
+
+# htop
+
+# Установим
+sudo apt install htop
+
+# Запустим
+htop
+
+# Мониторинг дисков
+# Команда df
+df -h
+
+# Просмотр логов служб
+journalctl -u sshd
+
+
+
+
+ls -l | cut -d " " -f 1  -  ключ d применяентся для определения по какому параметру делить столбцы , f - определяет какой стобец использовать
+
+
+ls -l | cut -c 1-12 |sort |uniq   - с помощью параметра "-с" мы определяем												количество символов в стобце которое 											необходимо вывести/записать . Дальше мы сортируем  и при помощи юник (юник выделяет уникальные значения и выводит их, по типу функции set  питоне)
+
+
+
+ln file.txt file2.txt  - создание жесткой ссылки привязанной к одному айноту
+
+
+ln -s file.txt file2.txt   - созздание символической ссылки (типа ярклыка в винде)
+
+
+chmod ugo+-rwx test_rermisson.txt  - полный набор на символов для изменения прав 
+
+
+
+chmod g-wx,o-x test_rermisson.sh  - изменений прав доступа разных групп ч\з запятую
+
+
+chmod u=rwx,go=r test_rermisson.sh   - изменение прав через ровно и перечисление
+
+
+
+chmod 744  test_permission.sh  - изменение прав доступа ч\з числовые значения, где 								    7 максмальный доступ
+
+
+sudo chgrp team1 someproject/ - изменить группу владельца директории 
+
+sudo chmod g+s someproject   - добавим sgid для данной директории . т.е. теперь 							вносить изменения в идректорию могут пользователи 									группы team1 (бит сет груп айди)
+
+
+
+
+
+# Linux. Уровень 1
+# Урок 4
+# Загрузка ОС и процессы
+
+# Разбор ДЗ
+
+# Удалить пользователя из группы
+# Создадим группу
+sudo groupadd team1
+
+# Создадим пользователя
+sudo useradd -s /bin/bash -m user1
+
+# Добавим пользователя в группу
+sudo usermod -aG team1 user1
+
+# Удаление пользоваетля из группы с использованием команды delgroup
+sudo delgroup user1 team1
+
+# Удаление пользоваетля из группы с использованием команды gpasswd
+sudo gpasswd -d user1 team1
+
+# Удаление пользоваетля из группы с использованием команды deluser
+sudo deluser user1 team1
+
+# 3. Создать пользователя с правами суперпользователя. Сделать так, чтобы sudo не требовал пароль для выполнения команд.
+# Создадим пользователя
+sudo useradd -s /bin/bash -m user2
+
+# Добавим его в группу sudo
+sudo usermod -aG sudo user2
+
+# Вносим изменения в файл /etc/sudoers
+sudoedit /etc/sudoers
+
+# Изменяем
+# %sudo ALL=(ALL) NOPASSWD:ALL
+
+# 4. * Используя дополнительные материалы, выдать одному из созданных пользователей право на выполнение ряда команд, требующих прав суперпользователя (команды выбираем на своё усмотрение).
+
+# user1 ALL=/usr/sbin/adduser
+
+# Cmnd_Alias SHUTDOWN_CMD=/sbin/shutdown
+
+# testuser2 ALL=(ALL) NOPASSWD:SHUTDOWN_CMD
+# Урок 5. 
+# Устройство файловой системы Linux. Понятия файла и каталога
+
+# Разбор ДЗ
+
+# 1. Потоки ввода/вывода. Создать файл, используя команду echo. Используя команду cat, прочитать содержимое каталога etc, ошибки перенаправить в отдельный файл.
+echo 'Hello, team!' > greeting.txt
+cat /etc/* 2> errors.log
+
+# 2. Конвейер (pipeline). Использовать команду cut на вывод длинного списка каталога, чтобы отобразить только права доступа к файлам. Затем отправить в конвейере этот вывод на sort и uniq, чтобы отфильтровать все повторяющиеся строки.
+ls -l
+ls -l | cut -d " " -f 1 | sort | uniq
+ls -l | cut -d " " -f 1 | sort | uniq | grep -v total
+
+# 3. Управление процессами.) Изменить конфигурационный файл службы SSH: /etc/ssh/sshd_config, отключив аутентификацию по паролю PasswordAuthentication no. Выполните рестарт службы systemctl restart sshd (service sshd restart), верните аутентификацию по паролю, выполните reload службы systemctl reload sshd (services sshd reload). В чём различие между действиями restart и reload? Создайте файл при помощи команды cat > file_name, напишите текст и завершите комбинацией ctrl+d.  Какой сигнал передадим процессу?
+sudo nano /etc/ssh/sshd_config
+ps -ef | grep sshd
+sudo systemctl restart sshd
+ps -ef | grep sshd
+sudo systemctl reload sshd
+ps -ef | grep sshd
+
+cat > task_3.txt
+# Ctrl+D
+
+
+
+# Файловая система
+# Просмотр иерархии каталогов
+tree
+
+# Inode и каталог
+# Посмотрим айноды
+ls -li
+
+# Жесткие и символические ссылки
+mkdir lesson5
+cd lesson5
+
+# Работаем с жёcткими ссылками
+# Создадим файл
+echo 'Some text' > file1.txt
+
+# Создадим на него жёсткую ссылку
+ln file1.txt file2.txt
+
+# Убедимся что айноды обоих файлов равны
+ls -li
+
+# Работаем с символическими ссылками
+# Создадим файл
+echo 'Some text' > file3.txt
+
+# Создадим символическую ссылку
+ln -s file3.txt file4.txt
+
+# Посмотрим на айноды и имена файлов
+ls -li
+
+# Удалим символическую ссылку
+unlink file4.txt
+
+# Права доступа к файлам и каталогам
+ls -l
+
+# Создадим новый файл
+touch test_permissions.txt
+
+# Добавим право записи для остальных (не владельца и не группы-владельца)
+chmod o+w test_permissions.sh
+
+# Добавим право на выполнение файла для всех
+chmod +x test_permissions.sh
+
+# Уберём право на выполнение у группы и остальных
+chmod go-x test_permissions.sh
+
+# Вариант определения прав в числовом представлении
+chmod 766 test_permissions.sh
+
+# Специальные биты SUID, SGID, Sticky
+# SUID
+# Создадим скрипт
+touch script.sh 
+
+# Сделаем его исполняемым
+chmod +x script.sh
+
+# Добавим SUID
+chmod u+s script.sh 
+
+# SGID
+# Создадим директорию
+mkdir project
+
+# Добавим SGID
+chmod g+s project
+
+# Sticky bit
+# Создадим новую папку
+mkdir temp
+
+# Добавим Sticky bit
+chmod +t temp
+
+# Разбор ДЗ
+
+# 1. Создать файл file1 и наполнить его произвольным содержимым. Скопировать его в file2. Создать символическую ссылку file3 на file1. Создать жёсткую ссылку file4 на file1. Посмотреть, какие inode у файлов. Удалить file1. Что стало с остальными созданными файлами? Попробовать вывести их на экран.
+
+# Создаём файл
+echo 'First file' > file1
+
+# Копируем в file2
+cp file1 file2 
+
+# Создаём символическую ссылку
+ln -s file1 file3
+
+# Создаём жёсткую ссылку
+ln file1 file4
+
+# Посмотрим список файлов с айнодами
+ls -li
+
+# Удалим исходный файл
+rm file1
+
+# Проверим снова
+ls -li
+
+# Проверим содержимое всех файлов
+cat file*
+
+# 2. Дать созданным файлам другие, произвольные имена. Создать новую символическую ссылку. Переместить ссылки в другую директорию.
+
+# Переименовываем файлы
+mv file2 file2_new
+mv file3 file3_new
+mv file4 file4_new
+
+# Создаём ещё одну символическую ссылку
+ln -s file2_new file2_new.link
+
+# СОздадим новую директорию
+mkdir task2
+ls -l
+
+# Переместим файлы в новую директорию
+mv file2_new.link task2
+mv file4_new task2
+
+# Проверим что получилось
+ls -l ./task2/
+
+# 3. Создать два произвольных файла. Первому присвоить права на чтение и запись для владельца и группы, только на чтение — для всех. Второму присвоить права на чтение и запись только для владельца. Сделать это в численном и символьном виде.
+
+# Создадим два файла
+touch doc1.txt
+touch doc2.txt
+ls -l | grep doc
+
+# Зададим права в символьном виде
+chmod ug=rw,o=r doc1.txt
+chmod u=rw,go= doc2.txt
+ls -l | grep doc
+
+# Зададим права в числовом виде
+chmod 0 doc*
+chmod 664 doc1.txt
+chmod 600 doc2.txt
+ls -l | grep doc
+
+# 4. Создать пользователя, обладающего возможностью выполнять действия от имени суперпользователя.
+# Это задание мы рассматривали на одном из предыдущих уроков
+
+# 5. * Создать группу developer и нескольких пользователей, входящих в неё. Создать директорию для совместной работы. Сделать так, чтобы созданные одними пользователями файлы могли изменять другие пользователи этой группы.
+
+# Создадим группу
+sudo groupadd developer
+
+# Создадим двух пользователей
+sudo useradd -m -s /bin/bash dev1
+sudo useradd -m -s /bin/bash dev2
+sudo passwd dev1
+sudo passwd dev2
+
+# Добавим пользователей в группу developer
+sudo usermod -aG developer dev1
+sudo usermod -aG developer dev2
+
+# Создадим папку проекта
+mkdir project
+
+# Изменим группу для проекта
+chgrp developer project
+
+# выставим SGID
+sudo chmod g+s project
+
+# 6. * Создать в директории для совместной работы поддиректорию для обмена файлами, но чтобы удалять файлы могли только их создатели.
+
+# Создаём в project общую папку
+cd project
+mkdir shared
+
+# Зададим для неё stiky bit
+chmod +t shared
+ls -l
+
+# 7. * Создать директорию, в которой есть несколько файлов. Сделать так, чтобы открыть файлы можно было, только зная имя файла, а через ls список файлов посмотреть было нельзя.
+
+# Создадим новую папку
+mkdir noread
+ls -l
+
+# Создадим в этой папке текстовой файл
+echo 'I can read the file' > noread/document.txt
+
+# Заберём у папки право на чтение
+chmod -r noread
+
+# Проверим что получилось
+ls -l noread
+cat noread/document.txt
+
+
+
+vi <name> -включает режим редактора кода
+
+
+mikhail@mikhail-VirtualBox:~/lesson6$ echo $? - указывает номер ошибки в случае ее												  наличия
+
+
+
+ls -l | grep '.*\.sh$'  - найти все файлы заканчивающиеся на .sh (.* означает любое количество символов до, $ в конце шаблона означает что после указанных до долара символов ничего идти не может, а точка отображена с обратным слэшом так как спец сиволом почемаются именно таким образом)
+
+ls -l | grep -P '.*(for|if).*\.sh$' - поиск for и if  в файлах с расширением .sh( потому что такое задано в конце шаблона)
+
+
+sed -i 's/bye/Hello/g' hello.sh   - данная команда в файле позволяет заменить все встречающиеся словосочетания символов bye на Hello, s- означает замену символов, g - говорит о том что нужно заменять глобально (т.е. везде)
+
+ sed '/^$/d' task1.sh   - удалить пустые строки из файла
+
+
+ls -li | awk '{ print $1, $10 }'   - awk более мощный редактор, возможно использовать более сложный ситаксис, здесь при помощи конвеера мы связываемся с редактором и с командой принт выводим на экран только 1 и 10 столбец результата команды ls -li
+
+
+at -f /home/mikhail/lesson6/hello.sh 12:00am 02/08/2021  - at- планировщик разовых задач, в данной команде мы указали когда (также при помощи параметра -f указали, что команда выполняется из файла hello.sh (нашего скрипта)) и в какое время должна выполниться эта команда 
+
+
+atq - показать список текущих задач
+
+atrm 1 - удалить задачу под определенным номером
+
+
+# Урок 6. Введение в скрипты bash.
+# Планировщик задач crontab & at
+
+
+
+
+# Правила написания скриптов
+
+# Создадим папку урока
+mkdir lesson6
+cd lesson6
+
+# Создадим наш первый скрипт
+cat > hello.sh
+# Our first script
+echo 'Hello team!'
+
+# Запуск скрипта явным вызовом bash
+bash hello.sh
+
+# Делаем скрипт исполняемым
+chmod +x hello.sh
+
+# Запускаем с указанием относительного или абсолютного пути
+./script1.sh
+
+# Добавим первую строку
+#!/bin/bash
+
+# Переменные
+# установить значение переменной
+a=123
+
+# прочитать значение переменной
+echo $a
+
+# Некоторые переменные окружения
+echo $PATH
+echo $PWD
+echo $?
+
+# арифметические операции с переменными
+a=$((3+25))
+echo $a
+
+# Условный оператор if
+nano use_if.sh
+
+#!/bin/bash
+a=$1
+b=$2
+if [ -z $a ] || [ -z $b ]
+  then
+    echo "Please use parameters"
+    exit 1
+  else
+    if [ $a -eq $b ]
+      then
+        echo "true"
+      else
+        echo "false"
+    fi
+fi
+
+# Цикл for-in
+nano use_for_in.sh
+
+#!/bin/bash
+for i in {1..5}
+  do 
+    echo $i
+done
+
+# Цикл while
+nano use_while.sh
+
+#!/bin/bash
+i=1
+while [ $i -lt 10 ]
+  do 
+    echo $i
+    ((i+=1))
+done
+
+
+
+# Использование grep
+
+# Найдём файлы, имена которых включают sh
+ls -l | grep sh
+
+# Создадим ещё один файл для тестирования
+touch shell.txt
+
+# Проверим
+ls -l | grep sh
+
+# Создадим шаблон на регулярных выражениях для более точного поиска
+ls -l | grep -P '.*(for|if).*\.sh$'
+
+# Потоковый текстовый редактор sed
+
+# Изменим в скрипте hello.sh слово Hello на Bye
+cat hello.sh
+sed 's/Hello/Bye/g' hello.sh
+
+# Или меняем сразу в файле
+sed -i 's/Hello/Bye/g' hello.sh
+
+# Использование awk
+# Из общего вывода получим только столбцы айнодов и имён файлов
+ls -li
+ls -li | awk '{ print $1, $10 }'
+
+# Планировщик at
+
+# Установим at
+sudo apt install at
+
+# Проверим его статус
+sudo systemctl status atd
+
+# Создадим задание
+at -f /home/ubuntu/lesson6/hello.sh 12:00am 10/24/2020
+
+# Просмотреть очередь заданий
+atq
+
+# Удалить первое задание
+atrm 1
+
+# Планировщик Crontab
+
+# Просмотрим системный crontab
+cat /etc/crontab 
+
+# Просмотрим пользовательский crontab
+crontab -l
+
+# редактируем пользовательский crontab
+crontab -e
+
+# Добавим новое задание
+0 23 * * 6 /home/ubuntu/lesson6/hello.sh
+
+# Проверка выполнения задания по записям в системном логе
+sudo cat /var/log/syslog | grep -i cron
+
+
+# фишка как через командную строку внести изменения в файл /etc/apt/sources.list
+# чтобы создать новый репозеторий под программу
+
+ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+ 
+
+
+Подключение docker 
+
+sudo apt-get remove docker docker-engine docker.io containerd runc
+
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+
+
+grep docker /etc/apt/sources.list
+
+deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable   - 																				проверяем 														правильно ли написали ссылку 												на скачивание пакета в репозиторий
+
+sudo apt update
+
+
+sudo apt install docker-ce docker-ce-cli containerd.io    
+
+sudo docker run hello-world
+
+sudo usermod -aG docker ing
+
+
+grep docker /etc/group
+
+sudo reboot
+
+
+
+### Работаем с докером, после его установки
+
+
+mikhail@mikhail-VirtualBox:~$ sudo mkdir -p /var/www/html
+mikhail@mikhail-VirtualBox:~$ cd /var/www/html
+mikhail@mikhail-VirtualBox:/var/www/html$ sudo nano index.html
+mikhail@mikhail-VirtualBox:/var/www/html$ docker run -d --name nginx -p 80:80 -v /var/www/html:/usr/share/nginx/html nginx
+79e2e2877db9406269c651c4c5d6c8f256b3136712cc5c1706f1585769965b50
+docker: Error response from daemon: driver failed programming external connectivity on endpoint nginx (fb533d0f65e770a22c04ac4050b30abf0fbefab7d7895d980cd6285323cb9142): Error starting userland proxy: listen tcp4 0.0.0.0:80: bind: address already in use.
+(НЕ БЫЛ ОСТАНОВЛЕН ПРОЦЕСС УЖЕ ЗАНЯТЫЙ ЭТИМ ПОРТОМ - программа nginx  занимала его!!!
+останавливаем процес при помощи команды "sudo systemctl stop nginx" - остановили процесс)
+mikhail@mikhail-VirtualBox:/var/www/html$ sudo systemctl stop nginx
+mikhail@mikhail-VirtualBox:/var/www/html$ docker run -d --name nginx -p 80:80 -v /var/www/html:/usr/share/nginx/html nginx
+
+(ОТОБРАЖАЕТ ТЕКУЩИЕ КОНТЕЙНЕРЫ)
+mikhail@mikhail-VirtualBox:/var/www/html$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                NAMES
+e9ad4a47be93   nginx     "/docker-entrypoint.…"   3 minutes ago   Up 3 minutes   0.0.0.0:81->80/tcp   nginx_fixed
+
+(ОТОБРАЖАЕТ ВСЕ СУЩЕСТВУЮЩИЕ КОНТЕЙНЕРЫ)
+mikhail@mikhail-VirtualBox:/var/www/html$ docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                      PORTS                NAMES
+e9ad4a47be93   nginx         "/docker-entrypoint.…"   4 minutes ago    Up 4 minutes                0.0.0.0:81->80/tcp   nginx_fixed
+79e2e2877db9   nginx         "/docker-entrypoint.…"   6 minutes ago    Created                                          nginx
+2d6cb6d66e97   hello-world   "/hello"                 31 minutes ago   Exited (0) 31 minutes ago  
+
+# Создаем инструкции для своего контейнера в Докере
+
+mikhail@mikhail-VirtualBox:~/lesson8/project_nginx$ cat > Dockerfile
+FROM ubuntu:latest
+MAIN user mikhail
+RUN apt update
+Run apt install nginx -y
+VOLUME "/var/www/html"
+EXPOSE 80
+CMD /usr/sbin/nginx -g "deamon off;"
+
+
+ДАЛЬШЕ запускаем сборку (собираем образ)
+
+mikhail@mikhail-VirtualBox:~/lesson8/project_nginx$ mikhail@mikhail-VirtualBox:~/lesson8/project_nginx$docker build -t nginx_custom_image ./       - точка и слэш ссылаются на текущую директорию =)
+
+
+ДАЛЬШЕ  Запускаем контейнер !!!! со всем нужными параметрами
+
+mikhail@mikhail-VirtualBox:~$ docker run -d --name nginx_custom -p 80:80 nginx_custom_image
+850905fb5ead4d6c967a7dd097f87dfcc6c5735ed5abb0b6839b0f7990e01db7
+mikhail@mikhail-VirtualBox:~$
+
+УПРАВЛЕНИЕ СЕТЯМИ В docker
+
+docker network ls - просмотреть доступные сети
+
+docker network inspect network_name - просмотреть участников сети
+
+iptables - доступ к приложениям, запущенным в контейнере, осщуествляется через эту			 команду
+
+
+docker-compose  - повторяет весь функционал docker, за исключением одного: если Docker  применяетлся для управления одним конкретным сервисом, то docker-compose  позволяет управлять нескольми контейнирам , входящими в состав приложения.
+
+
+
+
+Создаем контейнер через компоуз
+
+
+mikhail@mikhail-VirtualBox:~$ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   633  100   633    0     0   1543      0 --:--:-- --:--:-- --:--:--  1540
+100 16.3M  100 16.3M    0     0  3754k      0  0:00:04  0:00:04 --:--:-- 4963k
+
+mikhail@mikhail-VirtualBox:~$ sudo chmod +x /usr/local/bin/docker-compose
+
+sudo docker-compose up -d --build
+
+Полезные функции:
+
+docker restart _name_  - перезапустить
+
+docker exec -ti _name_  -зайти внутрь контейнера ( ты типа рута работающий в 									урезанной версии интерфейса)
+
+docker kill -s KILL _name_ - убить процессор
+
+docker logs _name_  - просмотреть логи
+
+
+docker inspect _name_ -  информация о контейнере в формате .json
+
+docker port _name_   - проверить какие порты проброшены для контейнера
+
+docker top _name_ - какие процессы исполняются в контейнере
+
+docker stats _name_  - команда статистики
+
+docker history _name_   -  это какие изменения происходили в образе
+
+docker rm _name_   -  удаление контейнеров
+
+docker rmi _name_  - удаление образа 
+
+
+
+Установка
+
+Linux
+
+curl -sSL https://get.docker.com/ | sh
+
+Mac
+
+Скачайте dmg по этой ссылке:
+https://download.docker.com/mac/stable/Docker.dmg
+
+Windows
+
+Используйте MSI-инсталлятор:
+https://download.docker.com/win/stable/InstallDocker.msi
+
+Реестры и репозитории Docker
+
+Вход в реестр
+
+docker login
+
+docker login localhost:8080
+
+Выход из реестра
+
+docker logout
+
+docker logout localhost:8080
+
+Поиск образа
+
+docker search nginx
+
+docker search nginx -- filter stars=3 --no-trunc busybox
+
+Pull (выгрузка из реестра) образа
+
+docker pull nginx
+
+docker pull eon01/nginx localhost:5000/myadmin/nginx
+
+Push (загрузка в реестр) образа
+
+docker push eon01/nginx
+
+docker push eon01/nginx localhost:5000/myadmin/nginx
+
+Первые действия с контейнерами
+
+Создание контейнера
+
+docker create -t -i eon01/infinite --name infinite
+
+Первый запуск контейнера
+
+docker run -it --name infinite -d eon01/infinite
+
+Переименование контейнера
+
+docker rename infinite infinity
+
+Удаление контейнера
+
+docker rm infinite
+
+Обновление контейнера
+
+docker update --cpu-shares 512 -m 300M infinite
+
+Запуск и остановка контейнеров
+
+Запуск остановленного контейнера
+
+docker start nginx
+
+Остановка
+
+docker stop nginx
+
+Перезагрузка
+
+docker restart nginx
+
+Пауза (приостановка всех процессов контейнера)
+
+docker pause nginx
+
+Снятие паузы
+
+docker unpause nginx
+
+Блокировка (до остановки контейнера)
+
+docker wait nginx
+
+Отправка SIGKILL (завершающего сигнала)
+
+docker kill nginx
+
+Отправка другого сигнала
+
+docker kill -s HUP nginx
+
+Подключение к существующему контейнеру
+
+docker attach nginx
+
+Получение информации о контейнерах
+
+Работающие контейнеры
+
+docker ps
+
+docker ps -a
+
+Логи контейнера
+
+docker logs infinite
+
+Информация о контейнере
+
+docker inspect infinite
+
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -q)
+
+События контейнера
+
+docker events infinite
+
+Публичные порты
+
+docker port infinite
+
+Выполняющиеся процессы
+
+docker top infinite
+
+Использование ресурсов
+
+docker stats infinite
+
+Изменения в файлах или директориях файловой системы контейнера
+
+docker diff infinite
+
+Управление образами
+
+Список образов
+
+docker images
+
+Создание образов
+
+docker build .
+
+docker build github.com/creack/docker-firefox
+
+docker build - < Dockerfile
+
+docker build - < context.tar.gz
+
+docker build -t eon/infinite .
+
+docker build -f myOtherDockerfile .
+
+curl example.com/remote/Dockerfile | docker build -f - .
+
+Удаление образа
+
+docker rmi nginx
+
+Загрузка репозитория в tar (из файла или стандартного ввода)
+
+docker load < ubuntu.tar.gz
+
+docker load --input ubuntu.tar
+
+Сохранение образа в tar-архив
+
+docker save busybox > ubuntu.tar
+
+Просмотр истории образа
+
+docker history
+
+Создание образа из контейнера
+
+docker commit nginx
+
+Тегирование образа
+
+docker tag nginx eon01/nginx
+
+Push (загрузка в реестр) образа
+
+docker push eon01/nginx
+
+Сеть
+
+Создание сети
+
+docker network create -d overlay MyOverlayNetwork
+
+docker network create -d bridge MyBridgeNetwork
+
+docker network create -d overlay \
+  --subnet=192.168.0.0/16 \
+  --subnet=192.170.0.0/16 \
+  --gateway=192.168.0.100 \
+  --gateway=192.170.0.100 \
+  --ip-range=192.168.1.0/24 \
+  --aux-address="my-router=192.168.1.5" --aux-address="my-switch=192.168.1.6" \
+  --aux-address="my-printer=192.170.1.5" --aux-address="my-nas=192.170.1.6" \
+  MyOverlayNetwork
+
+Удаление сети
+
+docker network rm MyOverlayNetwork
+
+Список сетей
+
+docker network ls
+
+Получение информации о сети
+
+docker network inspect MyOverlayNetwork
+
+Подключение работающего контейнера к сети
+
+docker network connect MyOverlayNetwork nginx
+
+Подключение контейнера к сети при его запуске
+
+docker run -it -d --network=MyOverlayNetwork nginx
+
+Отключение контейнера от сети
+
+docker network disconnect MyOverlayNetwork nginx
+
+Очистка Docker
+
+Удаление работающего контейнера
+
+docker rm nginx
+
+Удаление контейнера и его тома (volume)
+
+docker rm -v nginx
+
+Удаление всех контейнеров со статусом exited
+
+docker rm $(docker ps -a -f status=exited -q)
+
+Удаление всех остановленных контейнеров
+
+docker container prune
+
+docker rm `docker ps -a -q`
+
+Удаление контейнеров, остановленных более суток назад
+
+docker container prune --filter "until=24h"
+
+Удаление образа
+
+docker rmi nginx
+
+Удаление неиспользуемых (dangling) образов
+
+docker image prune
+
+docker rmi $(docker images -f dangling=true -q)
+
+Удаление неиспользуемых (dangling) образов даже с тегами
+
+docker image prune -a
+
+Удаление всех образов
+
+docker rmi $(docker images -a -q)
+
+Удаление всех образов без тегов
+
+docker rmi -f $(docker images | grep "^<none>" | awk "{print $3}")
+
+Остановка и удаление всех контейнеров
+
+docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+
+Удаление неиспользуемых (dangling) томов
+
+docker volume prune
+
+docker volume rm $(docker volume ls -f dangling=true -q)
+
+Удаление неиспользуемых (dangling) томов по фильтру
+
+docker volume prune --filter "label!=keep"
+
+Удаление неиспользуемых сетей
+
+docker network prune
+
+Удаление всех неиспользуемых объектов
+
+docker system prune
+
+По умолчанию для Docker 17.06.1+ тома не удаляются. Чтобы удалились и они тоже:
+docker system prune --volumes
+
+Docker Swarm
+
+Установка Docker Swarm
+
+curl -ssl https://get.docker.com | bash
+
+Прим. перев.: в Docker версий 1.12.0+ ничего дополнительно устанавливать не требуется, т.к. Docker Swarm встроен в Docker Engine в виде специального режима (Swarm mode).
+
+Инициализация Swarm
+
+docker swarm init --advertise-addr 192.168.10.1
+
+Подключение рабочего узла (worker) к Swarm
+
+docker swarm join-token worker
+
+Подключение управляющего узла (manager) к Swarm
+
+docker swarm join-token manager
+
+Список сервисов
+
+docker service ls
+
+Список узлов
+
+docker node ls
+
+Создание сервиса
+
+docker service create --name vote -p 8080:80 instavote/vote
+
+Список заданий Swarm
+
+docker service ps
+
+Масштабирование сервиса
+
+docker service scale vote=3
+
+Обновление сервиса
+
+docker service update --image instavote/vote:movies vote
+
+docker service update --force --update-parallelism 1 --update-delay 30s nginx
+
+docker service update --update-parallelism 5--update-delay 2s --image instavote/vote:indent vote
+
+docker service update --limit-cpu 2 nginx
+
+docker service update --replicas=5 nginx

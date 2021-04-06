@@ -1,0 +1,77 @@
+mikhail@mikhail-VirtualBox:~$ sudo useradd user3
+
+mikhail@mikhail-VirtualBox:~$ sudo userdel -r user3
+
+userdel: почтовый ящик user3 (/var/mail/user3) не найден
+
+userdel: домашний каталог пользователя user3 (/home/user3) не найден
+
+
+mikhail@mikhail-VirtualBox:~$ sudo adduser user3
+Добавляется пользователь «user3» ...
+Добавляется новая группа «user3» (1005) ...
+Добавляется новый пользователь «user3» (1003) в группу «user3» ...
+Создаётся домашний каталог «/home/user3» ...
+Копирование файлов из «/etc/skel» ...
+Новый пароль :
+Повторите ввод нового пароля :
+passwd: пароль успешно обновлён
+Изменение информации о пользователе user3
+Введите новое значение или нажмите ENTER для выбора значения по умолчанию
+        Полное имя []:
+        Номер комнаты []:
+        Рабочий телефон []:
+        Домашний телефон []:
+        Другое []:
+Данная информация корректна? [Y/n] y
+
+
+
+mikhail@mikhail-VirtualBox:~$ sudo addgroup team3
+Добавляется группа «team3» (GID 1006) ...
+Готово.
+mikhail@mikhail-VirtualBox:~$ sudo groupadd team4
+mikhail@mikhail-VirtualBox:~$ sudo cat /etc/group
+team3:x:1006:
+team4:x:1007:
+
+
+mikhail@mikhail-VirtualBox:~$ sudo usermod -aG team3 user3
+
+
+
+mikhail@mikhail-VirtualBox:~$ sudo chown user3 lesson_3
+
+drwxrwxr-x 2 user3   team2   4096 янв 30 16:44  lesson_3
+
+sudo chgrp team3 lesson_3
+
+drwxrwxr-x 2 user3   team3   4096 янв 30 16:44  lesson_3
+
+
+mikhail@mikhail-VirtualBox:~$ sudo gpasswd -d user3 team3
+
+Удаление пользователя user3 из группы team3
+
+sudo usermod -aG sudo user_test
+sudo:x:27:mikhail,user_test
+
+
+
+
+
+
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+%sudo ALL=(ALL) NOPASSWD:ALL
+
+
+
+"""
+
+ПОДСКАЖИТЕ, ПОЖАЛУЙСТА, КУДА ЛУЧШЕ ВСТАВИТЬ ЭТУ КОМАНДУ И ПРАВИЛЬНО ЛИ Я ЕЕ НАПИСАЛ
+
+"""
+
+# User alias specification
+%team3 ALL=(user3) ALL     # Из группы team3 пользователю user3 предоставить все 								 права рута

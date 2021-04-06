@@ -1,0 +1,33 @@
+mikhail@mikhail-VirtualBox:~$ echo 'lesson4' > lesson4.txt
+mikhail@mikhail-VirtualBox:~$ cat lesson4.txt
+lesson4
+mikhail@mikhail-VirtualBox:~$ cat /etc/* 2> errors.log
+
+ls -l | cut -c 1-12 |sort |uniq
+
+drwxrwxr-x 2
+drwxr-xr-x 2
+drwxr-xr-x 7
+-rw-rw-r-- 1
+итого 8
+
+
+
+
+mikhail@mikhail-VirtualBox:~$ sudo nano /etc/ssh/sshd_config 	 #ПОменял на "no"
+mikhail@mikhail-VirtualBox:~$ sudo systemctl restart sshd
+mikhail@mikhail-VirtualBox:~$ sudo nano /etc/ssh/sshd_config    #Вернул значение 																	"Yes"
+
+
+sudo systemctl reload sshd
+
+
+
+mikhail@mikhail-VirtualBox://$ mc
+
+
+mikhail@mikhail-VirtualBox://$ ps -ef
+
+mikhail@mikhail-VirtualBox://$ ^3
+
+mikhail@mikhail-VirtualBox://$ kill 9 1901Завершено
