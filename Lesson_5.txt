@@ -1,0 +1,62 @@
+-----------1
+
+echo 'some text' > task1.txt
+
+cp task1.txt  task1_2.txt
+
+mikhail@mikhail-VirtualBox:~/lesson5$ ln -s task1.txt  task1_3.txt
+mikhail@mikhail-VirtualBox:~/lesson5$ ln task1.txt  task1_4.txt
+mikhail@mikhail-VirtualBox:~/lesson5$ ls -i
+  678563 task1_3.txt  
+  678557 task1_4.txt  
+  678562 task1_2.txt  
+  678557 task1.txt
+ 
+ """
+
+ Скопированный и созданный по жёсткой ссылке файлы сохранились в системе, символический - перестал на что-либо ссылаться  
+ cat: task1_3.txt: Нет такого файла или каталога
+
+"""
+------------2
+
+mv task_1_4.txt task2.txt
+
+mikhail@mikhail-VirtualBox:~/lesson5$ ln task2.txt task2_2.txt
+
+
+mv task2_2.txt ..
+
+mikhail@mikhail-VirtualBox:~/lesson5$ cd ..
+mikhail@mikhail-VirtualBox:~$ cat task2_2.txt
+some text
+
+
+----------3
+
+
+mikhail@mikhail-VirtualBox:~/lesson5$ touch task3.txt
+mikhail@mikhail-VirtualBox:~/lesson5$ touch task3_2.txt
+mikhail@mikhail-VirtualBox:~/lesson5$ chmod ug=rw,o=r task3.txt
+
+mikhail@mikhail-VirtualBox:~/lesson5$ chmod 711 task3_2.txt
+
+
+---------4
+
+
+mikhail@mikhail-VirtualBox:~/lesson5$ sudo useradd -s /bin/bash -m superuser
+mikhail@mikhail-VirtualBox:~/lesson5$ sudo usermod -aG sudo superuser
+
+
+
+
+
+
+
+
+
+
+
+
+

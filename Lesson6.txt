@@ -1,0 +1,81 @@
+----------------------1
+
+mikhail@mikhail-VirtualBox:~/lesson6$ cat > task1.sh
+some
+
+
+string
+
+
+mikhail@mikhail-VirtualBox:~/lesson6$ sed -i 's/[a-z]/\U&/g' task1.sh
+SOME
+
+
+STRING
+
+
+mikhail@mikhail-VirtualBox:~/lesson6$ sed -i '/^$/d' task1.sh
+mikhail@mikhail-VirtualBox:~/lesson6$ cat task1.sh
+SOME
+STRING
+
+
+--------------------2
+
+Не получилось, прошу разобрать на следующем уроке!
+
+
+
+
+
+------------------- 3
+
+
+mikhail@mikhail-VirtualBox:~$ ls -l | awk '{ print $1 }' | sort | uniq | grep -vi 'итого'         #подсмотрел, что можно убрал таким образом из вывода))
+drwxr--r--
+drwxrwsr-x
+drwxrwxr-x
+drwxr-xr-x
+-rw-rw-r--
+
+
+--------------------4
+
+
+mikhail@mikhail-VirtualBox:~/lesson6$ cat /var/log/syslog | grep -i sound
+
+
+Feb  7 11:31:13 mikhail-VirtualBox systemd[1]: Condition check resulted in Manage Sound Card State (restore and store) being skipped.
+Feb  7 11:31:13 mikhail-VirtualBox systemd[1]: Starting Save/Restore Sound Card State...
+Feb  7 11:31:13 mikhail-VirtualBox systemd[1]: Finished Save/Restore Sound Card State.
+Feb  7 11:31:13 mikhail-VirtualBox systemd[1]: Reached target Sound Card.
+Feb  7 11:31:22 mikhail-VirtualBox systemd[892]: Listening on Sound System.
+Feb  7 11:31:22 mikhail-VirtualBox systemd[892]: Starting Sound Service...
+Feb  7 11:31:24 mikhail-VirtualBox systemd[892]: Started Sound Service.
+Feb  7 11:31:33 mikhail-VirtualBox systemd[892]: Starting GNOME Sound sample caching handling...
+Feb  7 11:31:34 mikhail-VirtualBox systemd[892]: Started GNOME Sound sample caching handling.
+Feb  7 11:31:34 mikhail-VirtualBox systemd[892]: Reached target GNOME Sound sample caching handling.
+
+
+
+------------------------5
+
+
+mikhail@mikhail-VirtualBox:~$ sudo at -f /sbin/reboot 6:00pm 02/07/2021
+warning: commands will be executed using /bin/sh
+
+mikhail@mikhail-VirtualBox:~$ sudo atq
+3      Sun Feb  7 18:00:00 2021 a root
+1      Mon Aug  2 00:00:00 2021 a mikhail
+2      Mon Feb  8 00:00:00 2021 a mikhail
+mikhail@mikhail-VirtualBox:~$ sudo atrm 3
+mikhail@mikhail-VirtualBox:~$ sudo atq
+1      Mon Aug  2 00:00:00 2021 a mikhail
+2      Mon Feb  8 00:00:00 2021 a mikhail
+mikhail@mikhail-VirtualBox:~$
+
+
+
+
+--------------- 6
+
